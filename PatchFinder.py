@@ -1,5 +1,3 @@
-
-
 #take txt file of cves 
 #look for input keyword
 #look for all corresponding hash with that keyword
@@ -14,13 +12,22 @@ import requests
 import re
 
 ################ find cve related to keyword BEGIN ###################
-keyword = input("type a keyword ")
-with open("6.7_security.txt", "r") as cve_file:
+keyword = input("BUG: ")
+
+if " " in keyword:
+    final_file_name =keyword.replace(" ", "_")
+else:
+    final_file_name = keyword
+
+input_file = input("FILE: ")
+temp_file = "temp_" + input_file
+final_file = final_file_name + "_" + input_file 
+with open(input_file, "r") as cve_file:
     for line in cve_file:
         if "CVEs fixed in" in line:
             version = line.strip()
         elif keyword in line:
-            with open("cve_temp.txt", "a") as the_file:
+            with open(temp_file, "a") as the_file:
                 format_line = f"{version}{line}"
                 the_file.write(format_line)
 ################ find cve related to keyword END ###################  
@@ -28,7 +35,7 @@ with open("6.7_security.txt", "r") as cve_file:
 hash_pattern = r'CVE-\d{4}-\d{4,5}:\s+([a-f0-9]{40})'
 linux_commit = "https://github.com/torvalds/linux/commit/"
 
-with open("cve_temp.txt", "r") as the_file:
+with open(temp_file, "r") as the_file: 
     for line in the_file:
         match = re.search(hash_pattern, line)
         if match:
@@ -38,20 +45,17 @@ with open("cve_temp.txt", "r") as the_file:
             content = response.text
             #check if patch is <= 3 lines of code
             if " 1 change:" in content:
-                with open("cve_final.txt", "a") as the_file1:
+                with open(final_file, "a") as the_file1:
                     print("1 change")
                     the_file1.write(line)
 
             elif " 2 changes:" in content:
-                with open("cve_final.txt", "a") as the_file1:
+                with open(final_file, "a") as the_file1:
                     print("2 changes")
                     the_file1.write(line)
 
             elif " 3 changes:" in content:
-                with open("cve_final.txt", "a") as the_file1:
+                with open(final_file, "a") as the_file1:
                     print("3 changes")
                     the_file1.write(line)
             
-
-
-
