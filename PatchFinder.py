@@ -10,6 +10,8 @@
 import urllib
 import requests
 import re
+import json
+import os
 
 ################ find cve related to keyword BEGIN ###################
 keyword = input("BUG: ")
@@ -19,43 +21,39 @@ if " " in keyword:
 else:
     final_file_name = keyword
 
-input_file = input("FILE: ")
-temp_file = "temp_" + input_file
-final_file = final_file_name + "_" + input_file 
-with open(input_file, "r") as cve_file:
-    for line in cve_file:
-        if "CVEs fixed in" in line:
-            version = line.strip()
-        elif keyword in line:
-            with open(temp_file, "a") as the_file:
-                format_line = f"{version}{line}"
-                the_file.write(format_line)
-################ find cve related to keyword END ###################  
-
-hash_pattern = r'CVE-\d{4}-\d{4,5}:\s+([a-f0-9]{40})'
+input_file = "kernel_cves.json"
+final_file = final_file_name + ".txt"   
 linux_commit = "https://github.com/torvalds/linux/commit/"
 
-with open(temp_file, "r") as the_file: 
-    for line in the_file:
-        match = re.search(hash_pattern, line)
-        if match:
-            hash = ''.join(match.group(1)) 
-            url = linux_commit+hash
-            response = requests.get(url)
-            content = response.text
-            #check if patch is <= 3 lines of code
-            if " 1 change:" in content:
-                with open(final_file, "a") as the_file1:
-                    print("1 change")
-                    the_file1.write(line)
 
-            elif " 2 changes:" in content:
-                with open(final_file, "a") as the_file1:
-                    print("2 changes")
-                    the_file1.write(line)
+with open(input_file, "r") as cve_file:
+    data = json.load(cve_file)
 
-            elif " 3 changes:" in content:
-                with open(final_file, "a") as the_file1:
-                    print("3 changes")
-                    the_file1.write(line)
+for cve in data.keys():
+    if 'fixes' in data[cve] and 'nvd_text' in data[cve]:
+        if data[cve]['fixes'] != "" and data[cve]['nvd_text'] != "":
+            hash = data[cve]['fixes']
+            description = data[cve]['nvd_text'] 
+            if keyword in description:
+                url = linux_commit+hash
+                response = requests.get(url)
+                content = response.text
+                #check if patch is <= 3 lines of code
+                if " 1 change:" in content:
+                    format_line = f"{cve}:{url}\n"
+                    with open(final_file, "a") as the_file:
+                        print("1 change")
+                        the_file.write(format_line)
+
+                elif " 2 changes:" in content:
+                    format_line = f"{cve}:{url}\n"
+                    with open(final_file, "a") as the_file:
+                        print("2 changes")
+                        the_file.write(format_line)
+
+                elif " 3 changes:" in content:
+                    format_line = f"{cve}:{url}\n"
+                    with open(final_file, "a") as the_file:
+                        print("3 changes")
+                        the_file.write(format_line)
             
