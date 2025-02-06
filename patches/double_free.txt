@@ -1,0 +1,13 @@
+CVE-2013-7348:https://github.com/torvalds/linux/commit/d558023207e008a4476a3b7bb8706b2a2bf5d84f
+CVE-2016-2384:https://github.com/torvalds/linux/commit/07d86ca93db7e5cdf4743564d98292042ec21af7
+CVE-2017-15129:https://github.com/torvalds/linux/commit/21b5944350052d2583e82dd59b19a9ba94a007f0
+CVE-2017-18595:https://github.com/torvalds/linux/commit/4397f04575c44e1440ec2e49b6302785c95fd2f8
+CVE-2017-6074:https://github.com/torvalds/linux/commit/5edabca9d4cff7f1f2b68f0bac55ef99d9798ba4
+CVE-2017-8890:https://github.com/torvalds/linux/commit/657831ffc38e30092a2d5f03d385d710eb88b09a
+CVE-2019-15504:https://github.com/torvalds/linux/commit/8b51dc7291473093c821195c4b6af85fadedbc2f
+CVE-2021-46938:https://github.com/torvalds/linux/commit/8e947c8f4a5620df77e43c9c75310dc510250166
+CVE-2022-28389:https://github.com/torvalds/linux/commit/04c9b00ba83594a29813d6b1fb8fdc93a3915174
+CVE-2022-28390:https://github.com/torvalds/linux/commit/c70222752228a62135cee3409dccefd494a24646
+CVE-2022-34494:https://github.com/torvalds/linux/commit/1680939e9ecf7764fba8689cfb3429c2fe2bb23c
+CVE-2023-5345:https://github.com/torvalds/linux/commit/e6e43b8aa7cd3c3af686caf0c2e11819a886d705
+CVE-2024-1085:https://github.com/torvalds/linux/commit/b1db244ffd041a49ecc9618e8feb6b5c1afcdaa7

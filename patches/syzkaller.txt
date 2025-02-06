@@ -1,0 +1,4 @@
+https://github.com/torvalds/linux/commit/093b995e3b55a0ae0670226ddfcb05bfbf0099ae:2 lines: 
+https://github.com/torvalds/linux/commit/bf33f87dd04c371ea33feb821b60d63d754e3124:2 lines:slab OOB
+https://github.com/torvalds/linux/commit/15e668070a64bb97f102ad9cf3bccbca0545cda8:10 lines: null-ptr
+https://github.com/torvalds/linux/commit/ca4ef4574f1ee5252e2cd365f8f5d5bafd048f32:8 lines: slab oob

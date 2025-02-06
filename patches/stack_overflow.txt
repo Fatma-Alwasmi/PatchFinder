@@ -1,0 +1,2 @@
+CVE-2023-52482:https://github.com/torvalds/linux/commit/a5ef7d68cea1344cf524f04981c2b3f80bedbb0d
+CVE-2024-26710:https://github.com/torvalds/linux/commit/f1acb109505d983779bbb7e20a1ee6244d2b5736
