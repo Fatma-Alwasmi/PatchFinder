@@ -11,6 +11,10 @@ import urllib
 import requests
 import re
 import json
+import subprocess
+import os
+
+os.chdir("/home/falwasmi/linux-kernel")
 
 keyword = input("BUG: ")
 
@@ -19,9 +23,9 @@ if " " in keyword:
 else:
     final_file_name = keyword
 
-input_file = "kernel_cves.json"
-final_file = final_file_name + ".txt"   
-linux_commit = "https://github.com/torvalds/linux/commit/"
+input_file = "/home/falwasmi/kernel_cves.json"
+final_file = "/home/falwasmi/" + final_file_name + ".txt"   
+linux_commit = "https://github.com/gregkh/linux/commit/"
 count = 0
 
 with open(input_file, "r") as cve_file:
@@ -33,17 +37,36 @@ for cve in data.keys():
             hash = data[cve]['fixes']
             description = data[cve]['nvd_text'] 
             if keyword.lower() in description.lower():
-                url = linux_commit+hash
-                if requests.get(url).status_code == 200:
-                    response = requests.get(url)
-                    content = response.text
-                    #check if patch is <= 3 lines of code
-                    #modify to check if one file changed only '>1 changed file'
-                    if (" 1 change:" in content or " 2 changes:" in content or " 3 changes:" in content) and ">1 changed file" in content:
-                        format_line = f"{cve}:{url}\n"
-                        with open(final_file, "a") as the_file:
-                            print(format_line)
-                            the_file.write(format_line)
-                            count+=1
+                    
+                result = subprocess.run(
+                ["git", "show", "--stat", hash],
+                capture_output=True,
+                text=True,
+                check=True
+                )
+
+                output_lines = result.stdout.strip().splitlines()
+                last_two_lines = output_lines[-2:] if len(output_lines) >= 2 else output_lines
+        
+                        
+                line1 = last_two_lines[0].strip()  # ex "fs/jfs/jfs_dmap.c | 3 ++-"
+                line2 = last_two_lines[1].strip()  # ex "1 file changed, 2 insertions(+), 1 deletion(-)"
+        
+                three_or_less = False
+                if " 1 " in line1 or " 2 " in line1 or " 3 " in line1:
+                    three_or_less = True
+        
+                one_file_changed = False
+                if "1 file changed" in line2:
+                    one_file_changed = True
+
+
+                if three_or_less and one_file_changed:
+                    url = linux_commit+hash 
+                    format_line = f"{url}.diff\n"
+                    with open(final_file, "a") as the_file:
+                        print(format_line)
+                        the_file.write(format_line)
+                        count+=1
 
 print(f"Found {count} {keyword} bug patches")
